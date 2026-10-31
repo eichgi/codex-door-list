@@ -1,4 +1,16 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dool Fest
+
+Panel para organizadores con autenticación de Supabase, CRUD de eventos, tipos de entrada y ventas.
+
+## Configuración
+
+1. Copia `.env.example` como `.env.local` y configura la URL y la Publishable Key de tu proyecto de Supabase.
+2. Aplica, en orden, las migraciones de `supabase/migrations/` a tu proyecto de Supabase: `20261031120000_create_events_and_ticket_types.sql` y `20261031130000_add_event_capacity_and_ticket_sales.sql`.
+3. En Supabase Auth, habilita el proveedor de correo y configura la URL de redirección de tu entorno si usas confirmación de correo.
+
+La migración aplica RLS: una persona autenticada sólo puede consultar y modificar sus propios eventos, sus tipos de entrada y sus ventas.
+
+La suma de aforos de los tipos de entrada no puede superar el aforo del evento. Esta regla se aplica en la interfaz y mediante triggers en PostgreSQL, incluso ante solicitudes simultáneas. Tampoco se permiten ventas que excedan el aforo de su tipo de entrada.
 
 ## Getting Started
 

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-6 py-16 text-white">
@@ -7,6 +9,9 @@ export default function Home() {
       />
 
       <section className="relative w-full max-w-3xl rounded-3xl border border-white/15 bg-white/10 px-8 py-14 text-center shadow-2xl shadow-sky-950/30 backdrop-blur sm:px-14 sm:py-20">
+        <p className="text-sm font-bold uppercase tracking-[0.24em] text-sky-300 sm:text-base">
+          ¡Bienvenido a Dool Fest!
+        </p>
         <h1 className="text-5xl font-bold tracking-tight sm:text-7xl">
           Dool Fest 2026
         </h1>
@@ -22,6 +27,9 @@ export default function Home() {
         >
           Regístrame
         </button>
+        <Link href="/organizador" className="mt-5 inline-block text-sm font-semibold text-sky-200 underline underline-offset-4 hover:text-white">
+          Acceso para organizadores
+        </Link>
       </section>
     </main>
   );
