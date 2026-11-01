@@ -5,12 +5,18 @@ Panel para organizadores con autenticación de Supabase, CRUD de eventos, tipos 
 ## Configuración
 
 1. Copia `.env.example` como `.env.local` y configura la URL y la Publishable Key de tu proyecto de Supabase.
-2. Aplica, en orden, las migraciones de `supabase/migrations/` a tu proyecto de Supabase: `20261031120000_create_events_and_ticket_types.sql` y `20261031130000_add_event_capacity_and_ticket_sales.sql`.
+2. Aplica, en orden, todas las migraciones de `supabase/migrations/` a tu proyecto de Supabase.
 3. En Supabase Auth, habilita el proveedor de correo y configura la URL de redirección de tu entorno si usas confirmación de correo.
 
 La migración aplica RLS: una persona autenticada sólo puede consultar y modificar sus propios eventos, sus tipos de entrada y sus ventas.
 
 La suma de aforos de los tipos de entrada no puede superar el aforo del evento. Esta regla se aplica en la interfaz y mediante triggers en PostgreSQL, incluso ante solicitudes simultáneas. Tampoco se permiten ventas que excedan el aforo de su tipo de entrada.
+
+Cada evento publicado y vigente tiene una página pública en `/eventos/{id}/registro`. El registro no requiere sesión, acepta eventos durante todo el día de su fecha y vuelve a validar tanto la vigencia como el cupo dentro de una transacción antes de guardar los datos del asistente. Un mismo correo solo puede registrarse una vez por evento, aunque seleccione otro tipo de entrada.
+
+Cada registro confirmado emite una única entrada con estado `valid`, `used` o `revoked`. Su página se encuentra en `/entradas/{codigo}` y solo puede consultarse con el código aleatorio completo de 256 bits; no existe un catálogo público de entradas.
+
+Al confirmar un registro, la entrada también se envía al correo del asistente mediante Resend. El mensaje incluye los datos del evento, el código y el QR embebido. Configura `RESEND_API_KEY` y `RESEND_FROM_EMAIL`; el remitente debe pertenecer a un dominio verificado en Resend.
 
 ## Getting Started
 
