@@ -1,23 +1,10 @@
 import Link from "next/link";
+import { formatEventDate } from "@/lib/dates";
 import { registrationIsOpen } from "@/lib/events/registration-is-open";
+import { mapCatalogEvents } from "@/lib/supabase/mappers";
 import { createClient } from "@/lib/supabase/server";
 
 export const instant = false;
-
-type PublicEvent = {
-  id: string;
-  title: string;
-  description: string | null;
-  starts_at: string;
-  venue: string;
-  status: "published";
-};
-
-const eventDateFormatter = new Intl.DateTimeFormat("es-MX", {
-  dateStyle: "full",
-  timeStyle: "short",
-  timeZone: "America/Mexico_City",
-});
 
 export default async function Home() {
   const supabase = await createClient();
@@ -31,7 +18,7 @@ export default async function Home() {
     throw new Error("No fue posible consultar los eventos disponibles.");
   }
 
-  const events = ((data ?? []) as PublicEvent[]).filter((event) =>
+  const events = mapCatalogEvents(data).filter((event) =>
     registrationIsOpen(event),
   );
 
@@ -95,7 +82,7 @@ export default async function Home() {
                   className="flex flex-col rounded-3xl border border-white/10 bg-slate-900/90 p-7 shadow-2xl shadow-sky-950/30 sm:p-8"
                 >
                   <p className="text-sm font-bold capitalize text-sky-300">
-                    {eventDateFormatter.format(new Date(event.starts_at))}
+                    {formatEventDate(event.startsAt)}
                   </p>
                   <h3 className="mt-3 text-3xl font-bold tracking-tight">
                     {event.title}

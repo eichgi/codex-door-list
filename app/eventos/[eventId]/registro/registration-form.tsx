@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
+import type { PublicTicketType, RegistrationState } from "@/lib/types";
 import { registerForEvent } from "./actions";
-import type { PublicTicketType, RegistrationState } from "./types";
 
 const initialState: RegistrationState = { status: "idle", message: "" };
 

@@ -1,7 +1,6 @@
-type RegistrationEvent = {
-  status: string;
-  starts_at: string;
-};
+import type { CatalogEvent } from "@/lib/types";
+
+type RegistrationEvent = Pick<CatalogEvent, "status" | "startsAt">;
 
 const mexicoCityDate = new Intl.DateTimeFormat("en-CA", {
   timeZone: "America/Mexico_City",
@@ -24,7 +23,7 @@ function calendarDateKey(date: Date) {
 export function registrationIsOpen(event: RegistrationEvent, now = new Date()) {
   if (event.status !== "published") return false;
 
-  const eventDate = calendarDateKey(new Date(event.starts_at));
+  const eventDate = calendarDateKey(new Date(event.startsAt));
   const currentDate = calendarDateKey(now);
 
   return eventDate !== null && currentDate !== null && eventDate >= currentDate;

@@ -1,15 +1,7 @@
 import QRCode from "qrcode";
 import { Resend } from "resend";
-
-export type TicketEmailData = {
-  code: string;
-  attendee_name: string;
-  attendee_email: string;
-  ticket_type: string;
-  event_title: string;
-  event_venue: string;
-  event_starts_at: string;
-};
+import { formatEventDate } from "@/lib/dates";
+import type { Ticket } from "@/lib/types";
 
 function escapeHtml(value: string) {
   return value.replace(
@@ -25,19 +17,11 @@ function escapeHtml(value: string) {
   );
 }
 
-function formatEventDate(value: string) {
-  return new Intl.DateTimeFormat("es-MX", {
-    dateStyle: "full",
-    timeStyle: "short",
-    timeZone: "America/Mexico_City",
-  }).format(new Date(value));
-}
-
-function emailHtml(ticket: TicketEmailData, eventDate: string) {
-  const attendeeName = escapeHtml(ticket.attendee_name);
-  const eventTitle = escapeHtml(ticket.event_title);
-  const ticketType = escapeHtml(ticket.ticket_type);
-  const eventVenue = escapeHtml(ticket.event_venue);
+function emailHtml(ticket: Ticket, eventDate: string) {
+  const attendeeName = escapeHtml(ticket.attendeeName);
+  const eventTitle = escapeHtml(ticket.eventTitle);
+  const ticketType = escapeHtml(ticket.ticketType);
+  const eventVenue = escapeHtml(ticket.eventVenue);
   const escapedEventDate = escapeHtml(eventDate);
   const ticketCode = escapeHtml(ticket.code);
 
@@ -75,14 +59,14 @@ function emailHtml(ticket: TicketEmailData, eventDate: string) {
 </html>`;
 }
 
-function emailText(ticket: TicketEmailData, eventDate: string) {
+function emailText(ticket: Ticket, eventDate: string) {
   return [
-    `Tu entrada para ${ticket.event_title} está confirmada.`,
+    `Tu entrada para ${ticket.eventTitle} está confirmada.`,
     "",
-    `Asistente: ${ticket.attendee_name}`,
-    `Tipo de entrada: ${ticket.ticket_type}`,
+    `Asistente: ${ticket.attendeeName}`,
+    `Tipo de entrada: ${ticket.ticketType}`,
     `Fecha: ${eventDate}`,
-    `Lugar: ${ticket.event_venue}`,
+    `Lugar: ${ticket.eventVenue}`,
     "Estado: Válida",
     "",
     `Código de entrada: ${ticket.code}`,
@@ -91,7 +75,7 @@ function emailText(ticket: TicketEmailData, eventDate: string) {
   ].join("\n");
 }
 
-export async function sendTicketEmail(ticket: TicketEmailData) {
+export async function sendTicketEmail(ticket: Ticket) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM_EMAIL;
 
@@ -99,7 +83,7 @@ export async function sendTicketEmail(ticket: TicketEmailData) {
     throw new Error("Resend no está configurado.");
   }
 
-  const eventDate = formatEventDate(ticket.event_starts_at);
+  const eventDate = formatEventDate(ticket.eventStartsAt);
   const qrImage = await QRCode.toBuffer(ticket.code, {
     type: "png",
     errorCorrectionLevel: "M",
@@ -111,8 +95,8 @@ export async function sendTicketEmail(ticket: TicketEmailData) {
   const { error } = await resend.emails.send(
     {
       from,
-      to: ticket.attendee_email,
-      subject: `Tu entrada para ${ticket.event_title}`,
+      to: ticket.attendeeEmail,
+      subject: `Tu entrada para ${ticket.eventTitle}`,
       html: emailHtml(ticket, eventDate),
       text: emailText(ticket, eventDate),
       attachments: [

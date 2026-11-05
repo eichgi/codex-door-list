@@ -1,8 +1,9 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { sendTicketEmail, type TicketEmailData } from "@/lib/email/send-ticket-email";
-import type { RegistrationState } from "./types";
+import { sendTicketEmail } from "@/lib/email/send-ticket-email";
+import { mapTicket } from "@/lib/supabase/mappers";
+import type { RegistrationState } from "@/lib/types";
 
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -47,7 +48,7 @@ export async function registerForEvent(
 
     if (!ticketError && ticketData) {
       try {
-        await sendTicketEmail(ticketData as TicketEmailData);
+        await sendTicketEmail(mapTicket(ticketData));
         return {
           status: "success",
           message: "Tu registro y tu entrada quedaron confirmados. Te enviamos la entrada por correo.",

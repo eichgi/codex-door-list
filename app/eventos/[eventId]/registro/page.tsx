@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { formatEventDate } from "@/lib/dates";
+import { mapPublicEvent } from "@/lib/supabase/mappers";
 import { createClient } from "@/lib/supabase/server";
 import { RegistrationForm } from "./registration-form";
-import type { PublicEvent } from "./types";
 
 export const instant = false;
 
@@ -20,12 +21,8 @@ export default async function PublicRegistrationPage({
   if (error) throw new Error("No fue posible consultar el evento.");
   if (!data) notFound();
 
-  const event = data as PublicEvent;
-  const eventDate = new Intl.DateTimeFormat("es-MX", {
-    dateStyle: "full",
-    timeStyle: "short",
-    timeZone: "America/Mexico_City",
-  }).format(new Date(event.starts_at));
+  const event = mapPublicEvent(data);
+  const eventDate = formatEventDate(event.startsAt);
 
   return (
     <main className="min-h-screen bg-slate-950 px-5 py-10 text-white sm:py-16">
@@ -43,7 +40,7 @@ export default async function PublicRegistrationPage({
         </section>
 
         <section className="self-start rounded-3xl border border-sky-300/20 bg-slate-900/90 p-7 shadow-2xl shadow-sky-950/40 sm:p-8">
-          <RegistrationForm eventId={event.id} ticketTypes={event.ticket_types} />
+          <RegistrationForm eventId={event.id} ticketTypes={event.ticketTypes} />
         </section>
       </div>
     </main>
