@@ -13,12 +13,21 @@ export default async function OrganizerPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/acceso?next=/organizador");
-  const { data, error } = await supabase.from("events").select("*, ticket_types(*), registrations(*) ").order("starts_at");
-  if (error) {
-    logProviderError("No fue posible cargar el panel", error);
+  const [eventsResult, ticketTypesResult, registrationsResult] = await Promise.all([
+    supabase.from("events").select("*").order("starts_at"),
+    supabase.from("ticket_types").select("*"),
+    supabase.from("registrations").select("*"),
+  ]);
+  const providerError = eventsResult.error ?? ticketTypesResult.error ?? registrationsResult.error;
+  if (providerError) {
+    logProviderError("No fue posible cargar el panel", providerError);
     throw new Error(providerErrorMessages.loadOrganizer);
   }
-  const events = mapOrganizerEvents(data);
+  const events = mapOrganizerEvents({
+    events: eventsResult.data,
+    ticketTypes: ticketTypesResult.data,
+    registrations: registrationsResult.data,
+  });
 
   return <main className="dashboard"><header className="dashboard-header"><div><Link href="/" className="back-link">← Dool Fest</Link><p className="eyebrow">Panel del organizador</p><h1>Eventos e inscripciones</h1></div><form action={signOut}><button className="secondary-button">Cerrar sesión</button></form></header>
     <section className="panel"><h2>Crear evento</h2><form action={createEvent} className="grid-form"><label>Nombre<input name="title" required /></label><label>Sede<input name="venue" required /></label><label>Fecha y hora<input name="starts_at" type="datetime-local" required /></label><label>Aforo total<input name="max_capacity" type="number" min="1" required /></label><label className="full">Descripción<textarea name="description" rows={2} /></label><button type="submit">Crear evento</button></form></section>

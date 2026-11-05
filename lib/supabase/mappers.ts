@@ -24,18 +24,28 @@ type OrganizerEventRow = {
   description: string | null;
   status: EventStatus;
   max_capacity: number;
-  ticket_types: Array<{
-    id: string;
-    name: string;
-    max_capacity: number;
-  }>;
-  registrations: Array<{
-    id: string;
-    ticket_type_id: string;
-    buyer_name: string;
-    buyer_email: string | null;
-    quantity: number;
-  }>;
+};
+
+type OrganizerTicketTypeRow = {
+  id: string;
+  event_id: string;
+  name: string;
+  max_capacity: number;
+};
+
+type OrganizerRegistrationRow = {
+  id: string;
+  event_id: string;
+  ticket_type_id: string;
+  buyer_name: string;
+  buyer_email: string | null;
+  quantity: number;
+};
+
+type OrganizerRows = {
+  events: OrganizerEventRow[] | null;
+  ticketTypes: OrganizerTicketTypeRow[] | null;
+  registrations: OrganizerRegistrationRow[] | null;
 };
 
 type PublicEventRow = {
@@ -73,8 +83,11 @@ export function mapCatalogEvents(data: unknown): CatalogEvent[] {
   }));
 }
 
-export function mapOrganizerEvents(data: unknown): Event[] {
-  return ((data ?? []) as OrganizerEventRow[]).map((event) => ({
+export function mapOrganizerEvents(data: OrganizerRows): Event[] {
+  const ticketTypes = data.ticketTypes ?? [];
+  const registrations = data.registrations ?? [];
+
+  return (data.events ?? []).map((event) => ({
     id: event.id,
     title: event.title,
     venue: event.venue,
@@ -82,12 +95,12 @@ export function mapOrganizerEvents(data: unknown): Event[] {
     description: event.description,
     status: event.status,
     maxCapacity: event.max_capacity,
-    ticketTypes: event.ticket_types.map((ticketType) => ({
+    ticketTypes: ticketTypes.filter((ticketType) => ticketType.event_id === event.id).map((ticketType) => ({
       id: ticketType.id,
       name: ticketType.name,
       maxCapacity: ticketType.max_capacity,
     })),
-    registrations: event.registrations.map((registration) => ({
+    registrations: registrations.filter((registration) => registration.event_id === event.id).map((registration) => ({
       id: registration.id,
       ticketTypeId: registration.ticket_type_id,
       buyerName: registration.buyer_name,
