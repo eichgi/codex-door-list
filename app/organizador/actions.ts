@@ -75,9 +75,9 @@ export async function deleteTicketType(formData: FormData) {
   complete(error);
 }
 
-export async function createSale(formData: FormData) {
+export async function createRegistration(formData: FormData) {
   const { supabase } = await organizer();
-  const { error } = await supabase.from("ticket_sales").insert({
+  const { error } = await supabase.from("registrations").insert({
     event_id: text(formData, "event_id"), ticket_type_id: text(formData, "ticket_type_id"),
     buyer_name: text(formData, "buyer_name"), buyer_email: text(formData, "buyer_email") || null,
     quantity: number(formData, "quantity"),
@@ -85,17 +85,17 @@ export async function createSale(formData: FormData) {
   complete(error);
 }
 
-export async function updateSale(formData: FormData) {
+export async function updateRegistration(formData: FormData) {
   const { supabase } = await organizer();
-  const { error } = await supabase.from("ticket_sales").update({
+  const { error } = await supabase.from("registrations").update({
     buyer_name: text(formData, "buyer_name"), buyer_email: text(formData, "buyer_email") || null,
     quantity: number(formData, "quantity"),
-  }).eq("id", text(formData, "sale_id"));
+  }).eq("id", text(formData, "registration_id"));
   complete(error);
 }
 
-export async function deleteSale(formData: FormData) {
+export async function deleteRegistration(formData: FormData) {
   const { supabase } = await organizer();
-  const { error } = await supabase.from("ticket_sales").delete().eq("id", text(formData, "sale_id"));
+  const { error } = await supabase.from("registrations").delete().eq("id", text(formData, "registration_id"));
   complete(error);
 }
