@@ -65,3 +65,28 @@ export type RegistrationState = {
   ticketCode?: string;
   emailDelivery?: "sent" | "failed";
 };
+
+export type RegistrationErrorCode =
+  | "invalidRequest"
+  | "invalidName"
+  | "invalidEmail"
+  | "ticketTypeInvalid"
+  | "eventUnavailable"
+  | "ticketUnavailable"
+  | "emailAlreadyRegistered"
+  | "registrationFailed";
+
+export type RegistrationRequest = {
+  ticketTypeId: string;
+  buyerName: string;
+  buyerEmail: string;
+};
+
+export type RegistrationResponse = {
+  ticketCode: string;
+  emailDelivery: "sent" | "failed";
+};
+
+export type ApiErrorResponse = {
+  error: RegistrationErrorCode;
+};

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { logProviderError, providerErrorMessages } from "@/lib/provider-errors";
 import { createClient } from "@/lib/supabase/server";
 
 const dashboard = "/organizador";
@@ -22,8 +23,11 @@ async function organizer() {
   return { supabase, user };
 }
 
-function complete(error: { message: string } | null) {
-  if (error) throw new Error(error.message);
+function complete(error: { message: string } | null, publicMessage: string) {
+  if (error) {
+    logProviderError(publicMessage, error);
+    throw new Error(publicMessage);
+  }
   revalidatePath(dashboard);
 }
 
@@ -34,7 +38,7 @@ export async function createEvent(formData: FormData) {
     starts_at: text(formData, "starts_at"), max_capacity: number(formData, "max_capacity"),
     description: text(formData, "description") || null,
   });
-  complete(error);
+  complete(error, providerErrorMessages.createEvent);
 }
 
 export async function updateEvent(formData: FormData) {
@@ -44,13 +48,13 @@ export async function updateEvent(formData: FormData) {
     max_capacity: number(formData, "max_capacity"), description: text(formData, "description") || null,
     status: text(formData, "status"),
   }).eq("id", text(formData, "event_id"));
-  complete(error);
+  complete(error, providerErrorMessages.updateEvent);
 }
 
 export async function deleteEvent(formData: FormData) {
   const { supabase } = await organizer();
   const { error } = await supabase.from("events").delete().eq("id", text(formData, "event_id"));
-  complete(error);
+  complete(error, providerErrorMessages.deleteEvent);
 }
 
 export async function createTicketType(formData: FormData) {
@@ -58,7 +62,7 @@ export async function createTicketType(formData: FormData) {
   const { error } = await supabase.from("ticket_types").insert({
     event_id: text(formData, "event_id"), name: text(formData, "name"), max_capacity: number(formData, "max_capacity"),
   });
-  complete(error);
+  complete(error, providerErrorMessages.createTicketType);
 }
 
 export async function updateTicketType(formData: FormData) {
@@ -66,13 +70,13 @@ export async function updateTicketType(formData: FormData) {
   const { error } = await supabase.from("ticket_types").update({
     name: text(formData, "name"), max_capacity: number(formData, "max_capacity"),
   }).eq("id", text(formData, "ticket_type_id"));
-  complete(error);
+  complete(error, providerErrorMessages.updateTicketType);
 }
 
 export async function deleteTicketType(formData: FormData) {
   const { supabase } = await organizer();
   const { error } = await supabase.from("ticket_types").delete().eq("id", text(formData, "ticket_type_id"));
-  complete(error);
+  complete(error, providerErrorMessages.deleteTicketType);
 }
 
 export async function createRegistration(formData: FormData) {
@@ -82,7 +86,7 @@ export async function createRegistration(formData: FormData) {
     buyer_name: text(formData, "buyer_name"), buyer_email: text(formData, "buyer_email") || null,
     quantity: number(formData, "quantity"),
   });
-  complete(error);
+  complete(error, providerErrorMessages.createRegistration);
 }
 
 export async function updateRegistration(formData: FormData) {
@@ -91,11 +95,11 @@ export async function updateRegistration(formData: FormData) {
     buyer_name: text(formData, "buyer_name"), buyer_email: text(formData, "buyer_email") || null,
     quantity: number(formData, "quantity"),
   }).eq("id", text(formData, "registration_id"));
-  complete(error);
+  complete(error, providerErrorMessages.updateRegistration);
 }
 
 export async function deleteRegistration(formData: FormData) {
   const { supabase } = await organizer();
   const { error } = await supabase.from("registrations").delete().eq("id", text(formData, "registration_id"));
-  complete(error);
+  complete(error, providerErrorMessages.deleteRegistration);
 }

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { signOut } from "@/app/acceso/actions";
 import { formatEventDate } from "@/lib/dates";
+import { logProviderError, providerErrorMessages } from "@/lib/provider-errors";
 import { mapOrganizerEvents } from "@/lib/supabase/mappers";
 import { createClient } from "@/lib/supabase/server";
 import { createEvent, createRegistration, createTicketType, deleteEvent, deleteRegistration, deleteTicketType, updateEvent, updateRegistration, updateTicketType } from "./actions";
@@ -13,7 +14,10 @@ export default async function OrganizerPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/acceso?next=/organizador");
   const { data, error } = await supabase.from("events").select("*, ticket_types(*), registrations(*) ").order("starts_at");
-  if (error) throw new Error(error.message);
+  if (error) {
+    logProviderError("No fue posible cargar el panel", error);
+    throw new Error(providerErrorMessages.loadOrganizer);
+  }
   const events = mapOrganizerEvents(data);
 
   return <main className="dashboard"><header className="dashboard-header"><div><Link href="/" className="back-link">← Dool Fest</Link><p className="eyebrow">Panel del organizador</p><h1>Eventos e inscripciones</h1></div><form action={signOut}><button className="secondary-button">Cerrar sesión</button></form></header>

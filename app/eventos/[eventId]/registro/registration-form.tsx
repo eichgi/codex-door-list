@@ -1,9 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
-import type { PublicTicketType, RegistrationState } from "@/lib/types";
-import { registerForEvent } from "./actions";
+import { useState, type FormEvent } from "react";
+import {
+  isRegistrationErrorCode,
+  registrationErrorMessages,
+} from "@/lib/registrations/errors";
+import type {
+  ApiErrorResponse,
+  PublicTicketType,
+  RegistrationRequest,
+  RegistrationResponse,
+  RegistrationState,
+} from "@/lib/types";
 
 const initialState: RegistrationState = { status: "idle", message: "" };
 
@@ -14,11 +23,67 @@ export function RegistrationForm({
   eventId: string;
   ticketTypes: PublicTicketType[];
 }) {
-  const action = registerForEvent.bind(null, eventId);
-  const [state, formAction, pending] = useActionState(action, initialState);
+  const [state, setState] = useState(initialState);
+  const [pending, setPending] = useState(false);
   const availableTypes = ticketTypes.filter(
     (ticketType) => ticketType.remaining > 0 && ticketType.id !== state.unavailableTicketTypeId,
   );
+
+  async function submitRegistration(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setPending(true);
+
+    const formData = new FormData(event.currentTarget);
+    const requestBody: RegistrationRequest = {
+      ticketTypeId: String(formData.get("ticket_type_id") ?? ""),
+      buyerName: String(formData.get("buyer_name") ?? ""),
+      buyerEmail: String(formData.get("buyer_email") ?? ""),
+    };
+
+    try {
+      const response = await fetch(`/api/eventos/${eventId}/inscripciones`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        const body = (await response.json()) as ApiErrorResponse;
+        const error = isRegistrationErrorCode(body.error)
+          ? body.error
+          : "registrationFailed";
+        const unavailableTicketTypeId =
+          error === "ticketUnavailable" || error === "ticketTypeInvalid"
+            ? requestBody.ticketTypeId
+            : undefined;
+
+        setState({
+          status: "error",
+          message: registrationErrorMessages[error],
+          unavailableTicketTypeId,
+        });
+        return;
+      }
+
+      const result = (await response.json()) as RegistrationResponse;
+      setState({
+        status: "success",
+        message:
+          result.emailDelivery === "sent"
+            ? "Tu registro y tu entrada quedaron confirmados. Te enviamos la entrada por correo."
+            : "Tu registro y tu entrada quedaron confirmados, pero no pudimos enviar el correo. Abre y guarda tu entrada desde este enlace.",
+        ticketCode: result.ticketCode,
+        emailDelivery: result.emailDelivery,
+      });
+    } catch {
+      setState({
+        status: "error",
+        message: registrationErrorMessages.registrationFailed,
+      });
+    } finally {
+      setPending(false);
+    }
+  }
 
   if (state.status === "success") {
     return (
@@ -44,7 +109,7 @@ export function RegistrationForm({
   }
 
   return (
-    <form action={formAction} className="grid gap-5">
+    <form onSubmit={submitRegistration} className="grid gap-5">
       <div>
         <h2 className="text-2xl font-bold text-white">Elige tu entrada</h2>
         <p className="mt-1 text-sm text-slate-400">Cada registro corresponde a una persona.</p>
