@@ -24,11 +24,6 @@ export default async function Home() {
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-slate-950 px-5 py-10 text-white sm:py-16">
-      <div
-        aria-hidden="true"
-        className="fixed inset-0 bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.2),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.16),transparent_38%)]"
-      />
-
       <div className="relative mx-auto w-full max-w-6xl">
         <header className="flex flex-col gap-6 border-b border-white/10 pb-10 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -43,7 +38,7 @@ export default async function Home() {
             </p>
           </div>
           <Link
-            href="/organizador"
+            href="/dashboard"
             className="shrink-0 font-bold text-sky-300 hover:text-sky-200"
           >
             Acceso para organizadores →
