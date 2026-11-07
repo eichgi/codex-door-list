@@ -90,3 +90,48 @@ export type RegistrationResponse = {
 export type ApiErrorResponse = {
   error: RegistrationErrorCode;
 };
+
+export type DashboardEventSummary = Pick<
+  Event,
+  "id" | "title" | "venue" | "startsAt" | "status" | "maxCapacity"
+> & {
+  ticketTypeCount: number;
+  registeredCount: number;
+};
+
+export type DashboardTicketType = TicketType & {
+  registeredCount: number;
+};
+
+export type DashboardAttendee = {
+  registrationId: string;
+  name: string;
+  email: string | null;
+  quantity: number;
+  ticketTypeName: string;
+  registeredAt: string;
+};
+
+export type DashboardEventDetail = Pick<
+  Event,
+  | "id"
+  | "title"
+  | "description"
+  | "venue"
+  | "startsAt"
+  | "status"
+  | "maxCapacity"
+> & {
+  ticketTypes: DashboardTicketType[];
+  attendees: DashboardAttendee[];
+};
+
+export type DailyRegistrationPoint = {
+  date: string;
+  count: number;
+};
+
+export type DailyRegistrationsResponse = {
+  publishedAt: string | null;
+  registrations: DailyRegistrationPoint[];
+};
