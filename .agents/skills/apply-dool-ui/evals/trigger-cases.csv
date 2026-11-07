@@ -1,0 +1,10 @@
+prompt,should_trigger
+"Usa $apply-dool-ui para crear la tabla de asistentes",true
+"Agrega una pantalla de configuración al dashboard",true
+"Unifica los estados vacíos de todas las tablas",true
+"Revisa si este formulario respeta el diseño del proyecto",true
+"Agrega un skeleton mientras cargan los eventos",true
+"Crea una migración para guardar el teléfono del asistente",false
+"Corrige el mapeo de snake_case a camelCase",false
+"Actualiza el envío del correo de confirmación",false
+"Documenta las variables de entorno",false

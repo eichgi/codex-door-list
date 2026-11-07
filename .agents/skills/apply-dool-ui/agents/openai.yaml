@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dool UI"
+  short_description: "Aplica el sistema visual del proyecto"
+  default_prompt: "Usa $apply-dool-ui para implementar esta interfaz con los patrones visuales del proyecto."
