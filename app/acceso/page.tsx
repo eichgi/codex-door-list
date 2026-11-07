@@ -9,7 +9,7 @@ export default async function AccessPage({
   const params = await searchParams;
   const error = typeof params.error === "string" ? params.error : "";
   const message = typeof params.message === "string" ? params.message : "";
-  const next = typeof params.next === "string" ? params.next : "/organizador";
+  const next = typeof params.next === "string" ? params.next : "/dashboard";
 
   return (
     <main className="auth-page">

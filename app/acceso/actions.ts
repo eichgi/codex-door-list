@@ -13,7 +13,7 @@ export async function signIn(formData: FormData) {
   const supabase = await createClient();
   const email = value(formData, "email");
   const password = value(formData, "password");
-  const next = value(formData, "next") || "/organizador";
+  const next = value(formData, "next") || "/dashboard";
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
@@ -21,7 +21,7 @@ export async function signIn(formData: FormData) {
     redirect(`/acceso?error=${encodeURIComponent(providerErrorMessages.signIn)}`);
   }
   revalidatePath("/", "layout");
-  redirect(next.startsWith("/") ? next : "/organizador");
+  redirect(next.startsWith("/") ? next : "/dashboard");
 }
 
 export async function signUp(formData: FormData) {
