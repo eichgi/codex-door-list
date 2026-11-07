@@ -87,18 +87,18 @@ export function RegistrationForm({
 
   if (state.status === "success") {
     return (
-      <div className="rounded-2xl border border-emerald-300/30 bg-emerald-400/10 p-6" role="status">
-        <p className="text-sm font-bold uppercase tracking-[0.18em] text-emerald-300">Registro confirmado</p>
+      <div className="rounded-2xl border border-emerald-400/30 bg-emerald-950/60 p-6 text-emerald-100" role="status">
+        <p className="text-xs font-bold uppercase tracking-[0.2em]">Registro confirmado</p>
         <h2 className="mt-2 text-2xl font-bold text-white">¡Listo!</h2>
-        <p className="mt-2 text-slate-200">{state.message}</p>
+        <p className="mt-3 text-sm leading-6 text-emerald-100">{state.message}</p>
         {state.emailDelivery === "failed" && (
-          <p className="mt-4 rounded-xl border border-amber-300/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-100" role="alert">
+          <p className="mt-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-200" role="alert">
             Tu entrada sigue siendo válida. Consérvala desde el enlace de abajo.
           </p>
         )}
         {state.ticketCode && (
           <Link
-            className="mt-6 inline-flex rounded-xl bg-emerald-300 px-5 py-3 font-bold text-emerald-950 hover:bg-emerald-200"
+            className="mt-6 inline-flex rounded-xl bg-sky-300 px-5 py-3 font-bold text-slate-950 transition hover:bg-sky-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950"
             href={`/entradas/${state.ticketCode}`}
           >
             Ver mi entrada y código QR
@@ -111,13 +111,14 @@ export function RegistrationForm({
   return (
     <form onSubmit={submitRegistration} className="grid gap-5">
       <div>
-        <h2 className="text-2xl font-bold text-white">Elige tu entrada</h2>
-        <p className="mt-1 text-sm text-slate-400">Cada registro corresponde a una persona.</p>
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-sky-300">Tu entrada</p>
+        <h2 className="mt-2 text-2xl font-bold text-white">Completa tu registro</h2>
+        <p className="mt-2 text-sm text-slate-400">Cada registro corresponde a una persona.</p>
       </div>
 
-      <label>
+      <label className="text-sm font-medium text-slate-300">
         Tipo de entrada
-        <select name="ticket_type_id" required disabled={pending || availableTypes.length === 0} defaultValue="">
+        <select className="mt-2 rounded-xl border border-white/10 bg-slate-950 px-3 py-2.5 text-white transition focus-visible:border-sky-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/30" name="ticket_type_id" required disabled={pending || availableTypes.length === 0} defaultValue="">
           <option value="" disabled>Selecciona una opción</option>
           {ticketTypes.map((ticketType) => {
             const unavailable = ticketType.remaining < 1 || ticketType.id === state.unavailableTicketTypeId;
@@ -130,28 +131,28 @@ export function RegistrationForm({
         </select>
       </label>
 
-      <label>
+      <label className="text-sm font-medium text-slate-300">
         Nombre completo
-        <input name="buyer_name" required minLength={2} maxLength={120} autoComplete="name" disabled={pending} />
+        <input className="mt-2 rounded-xl border border-white/10 bg-slate-950 px-3 py-2.5 text-white transition focus-visible:border-sky-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/30" name="buyer_name" required minLength={2} maxLength={120} autoComplete="name" disabled={pending} />
       </label>
 
-      <label>
+      <label className="text-sm font-medium text-slate-300">
         Correo electrónico
-        <input name="buyer_email" type="email" required maxLength={254} autoComplete="email" disabled={pending} />
+        <input className="mt-2 rounded-xl border border-white/10 bg-slate-950 px-3 py-2.5 text-white transition focus-visible:border-sky-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/30" name="buyer_email" type="email" required maxLength={254} autoComplete="email" disabled={pending} />
       </label>
 
       {state.message && (
-        <p className="rounded-xl border border-red-300/30 bg-red-500/15 px-4 py-3 text-sm text-red-100" role="alert" aria-live="polite">
+        <p className="rounded-xl border border-red-400/30 bg-red-950/60 px-4 py-3 text-sm text-red-100" role="alert" aria-live="polite">
           {state.message}
         </p>
       )}
 
       {availableTypes.length === 0 ? (
-        <p className="rounded-xl bg-amber-400/10 px-4 py-3 text-sm text-amber-100" role="status">
+        <p className="rounded-xl border border-dashed border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300" role="status">
           Por el momento no hay tipos de entrada con disponibilidad.
         </p>
       ) : (
-        <button type="submit" disabled={pending} aria-disabled={pending}>
+        <button className="rounded-xl bg-sky-300 px-5 py-3 font-bold text-slate-950 transition hover:bg-sky-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950" type="submit" disabled={pending} aria-disabled={pending}>
           {pending ? "Confirmando disponibilidad…" : "Confirmar registro"}
         </button>
       )}

@@ -2,13 +2,11 @@
 
 export default function RegistrationError({ reset }: { reset: () => void }) {
   return (
-    <main className="grid min-h-screen place-items-center bg-slate-950 px-5 text-white">
-      <section className="w-full max-w-lg rounded-3xl border border-red-300/20 bg-slate-900 p-8 text-center">
-        <p className="text-sm font-bold uppercase tracking-[0.2em] text-red-300">Algo salió mal</p>
-        <h1 className="mt-3 text-3xl font-bold">No pudimos cargar el evento</h1>
+    <section className="mx-auto w-full max-w-lg rounded-3xl border border-red-400/30 bg-red-950/60 p-8 text-center text-red-100">
+        <p className="text-xs font-bold uppercase tracking-[0.2em]">Algo salió mal</p>
+        <h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">No pudimos cargar el evento</h1>
         <p className="mt-3 text-slate-300">Revisa tu conexión e intenta nuevamente.</p>
-        <button className="mt-7" type="button" onClick={reset}>Volver a intentar</button>
-      </section>
-    </main>
+        <button className="mt-7 rounded-xl bg-sky-300 px-5 py-3 font-bold text-slate-950 transition hover:bg-sky-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 focus-visible:ring-offset-2 focus-visible:ring-offset-red-950" type="button" onClick={reset}>Volver a intentar</button>
+    </section>
   );
 }
