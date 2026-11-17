@@ -99,7 +99,8 @@ export type DashboardEventSummary = Pick<
   registeredCount: number;
 };
 
-export type DashboardTicketType = TicketType & {
+export type DashboardTicketType = Omit<TicketType, "maxCapacity"> & {
+  maxCapacity: number | null;
   registeredCount: number;
 };
 
