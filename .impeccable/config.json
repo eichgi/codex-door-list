@@ -1,0 +1,15 @@
+{
+  "buildPath": "code",
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "arial",
+        "createdAt": "2026-11-17T02:57:08.041Z",
+        "reason": "Project DESIGN.md specifies Arial, Helvetica, sans-serif as the established display and body typography."
+      }
+    ]
+  }
+}

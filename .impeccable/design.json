@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-16T00:00:00-06:00",
+  "title": "Design System: Dool Fest",
+  "extensions": {
+    "colorMeta": {
+      "night": { "role": "neutral", "displayName": "Noche operativa", "canonical": "#020617", "tonalRamp": ["#020617", "#071226", "#0f172a"] },
+      "panel": { "role": "neutral", "displayName": "Panel profundo", "canonical": "#0f172a", "tonalRamp": ["#0f172a", "#1e293b", "#334155"] },
+      "signal-sky": { "role": "primary", "displayName": "Celeste de señal", "canonical": "#7dd3fc", "tonalRamp": ["#38bdf8", "#7dd3fc", "#bae6fd"] },
+      "danger": { "role": "tertiary", "displayName": "Rojo crítico", "canonical": "#7f1d1d", "tonalRamp": ["#7f1d1d", "#ef4444", "#fee2e2"] },
+      "success": { "role": "tertiary", "displayName": "Verde válido", "canonical": "#34d399", "tonalRamp": ["#064e3b", "#34d399", "#d1fae5"] },
+      "warning": { "role": "tertiary", "displayName": "Ámbar de atención", "canonical": "#fbbf24", "tonalRamp": ["#78350f", "#fbbf24", "#fef3c7"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Titular de evento", "purpose": "Encabeza el catálogo público y las decisiones de mayor jerarquía." },
+      "headline": { "displayName": "Titular operativo", "purpose": "Nombra pantallas, eventos y tareas principales." },
+      "title": { "displayName": "Título de bloque", "purpose": "Agrupa tarjetas, secciones y estados vacíos." },
+      "body": { "displayName": "Texto de apoyo", "purpose": "Explica detalles sin competir con acciones ni datos." },
+      "label": { "displayName": "Etiqueta de señal", "purpose": "Clasifica contexto y estado con mayúsculas y tracking amplio." }
+    },
+    "shadows": [
+      { "name": "container-legacy", "value": "0 20px 50px rgb(0 0 0 / .2)", "purpose": "Separa paneles y tarjetas de los estilos globales heredados." },
+      { "name": "card-emphasis", "value": "shadow-2xl", "purpose": "Destaca tarjetas navegables o superficies públicas sin sustituir los bordes." }
+    ],
+    "motion": [
+      { "name": "state-transition", "value": "transition", "purpose": "Transición breve en hover de enlaces, botones y tarjetas." },
+      { "name": "card-lift", "value": "translateY(-0.125rem)", "purpose": "Respuesta mínima en tarjetas navegables al pasar el cursor." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "legacy-mobile", "value": "700px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Acción principal para crear, confirmar o continuar una tarea.",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\">Continuar</button>",
+      "css": ".ds-btn-primary { background: #7dd3fc; color: #020617; border: 0; border-radius: 0.75rem; cursor: pointer; font: 700 1rem Arial, Helvetica, sans-serif; padding: 0.75rem 1.25rem; transition: background 150ms ease; } .ds-btn-primary:hover { background: #bae6fd; } .ds-btn-primary:focus-visible { outline: 2px solid #7dd3fc; outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Acción secundaria para navegación de panel o salida de sesión.",
+      "html": "<button class=\"ds-btn-secondary\" type=\"button\">Cancelar</button>",
+      "css": ".ds-btn-secondary { background: #1e293b; color: #f8fafc; border: 0; border-radius: 0.75rem; cursor: pointer; font: 700 0.875rem Arial, Helvetica, sans-serif; padding: 0.625rem 1rem; transition: background 150ms ease; } .ds-btn-secondary:hover { background: #334155; } .ds-btn-secondary:focus-visible { outline: 2px solid #7dd3fc; outline-offset: 2px; }"
+    },
+    {
+      "name": "Operational Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Contenedor para eventos, datos agrupados y tareas operativas.",
+      "html": "<article class=\"ds-card\"><p class=\"ds-card-label\">Publicado</p><h3 class=\"ds-card-title\">Nombre del evento</h3><p class=\"ds-card-copy\">Información operativa fácil de escanear.</p></article>",
+      "css": ".ds-card { background: #0f172a; border: 1px solid rgb(255 255 255 / 0.1); border-radius: 1.5rem; color: #f8fafc; font-family: Arial, Helvetica, sans-serif; padding: 1.5rem; } .ds-card-label { color: #7dd3fc; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.18em; margin: 0; text-transform: uppercase; } .ds-card-title { font-size: 1.5rem; line-height: 1.2; margin: 0.5rem 0 0; } .ds-card-copy { color: #94a3b8; line-height: 1.5; margin: 0.75rem 0 0; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Campo compacto de alta legibilidad para registros y configuración.",
+      "html": "<label class=\"ds-field\">Correo electrónico<input class=\"ds-input\" type=\"email\" placeholder=\"nombre@correo.com\" /></label>",
+      "css": ".ds-field { color: #cbd5e1; display: grid; font: 500 0.875rem Arial, Helvetica, sans-serif; gap: 0.5rem; } .ds-input { background: #020617; border: 1px solid rgb(255 255 255 / 0.1); border-radius: 0.75rem; color: #f8fafc; font: 400 1rem Arial, Helvetica, sans-serif; padding: 0.625rem 0.75rem; } .ds-input::placeholder { color: #64748b; } .ds-input:focus { border-color: #7dd3fc; outline: 2px solid rgb(125 211 252 / 0.3); outline-offset: 0; }"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "refersTo": "status-label",
+      "description": "Estado visible de una entrada o un registro, acompañado de texto explícito.",
+      "html": "<span class=\"ds-status-valid\">Válida</span>",
+      "css": ".ds-status-valid { background: rgb(52 211 153 / 0.1); border: 1px solid rgb(110 231 183 / 0.3); border-radius: 9999px; color: #a7f3d0; display: inline-flex; font: 700 0.875rem Arial, Helvetica, sans-serif; padding: 0.5rem 1rem; }"
+    },
+    {
+      "name": "Empty State",
+      "kind": "custom",
+      "refersTo": "empty-state",
+      "description": "Estado vacío que orienta hacia la siguiente acción sin recargar la pantalla.",
+      "html": "<section class=\"ds-empty\"><h3 class=\"ds-empty-title\">Todavía no tienes eventos</h3><p class=\"ds-empty-copy\">Crea un evento para empezar a configurar sus tipos de entrada.</p><button class=\"ds-empty-action\" type=\"button\">Crear un evento</button></section>",
+      "css": ".ds-empty { background: rgb(255 255 255 / 0.05); border: 1px dashed rgb(255 255 255 / 0.15); border-radius: 1.5rem; color: #f8fafc; font-family: Arial, Helvetica, sans-serif; padding: 3rem 1.5rem; text-align: center; } .ds-empty-title { font-size: 1.5rem; line-height: 1.2; margin: 0; } .ds-empty-copy { color: #94a3b8; line-height: 1.5; margin: 0.75rem auto 0; max-width: 32rem; } .ds-empty-action { background: #7dd3fc; border: 0; border-radius: 0.75rem; color: #020617; cursor: pointer; font: 700 1rem Arial, Helvetica, sans-serif; margin-top: 1.75rem; padding: 0.75rem 1.25rem; } .ds-empty-action:hover { background: #bae6fd; } .ds-empty-action:focus-visible { outline: 2px solid #7dd3fc; outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "La cabina de operaciones",
+    "overview": "Dool Fest usa una base nocturna sobria para concentrar la atención en registrar, administrar y validar eventos. La energía del producto aparece en el celeste de señal, reservado para acciones y foco. Las superficies mantienen aire moderado para lectura, con formularios, tarjetas y métricas compactos para una operación de alta velocidad.",
+    "keyCharacteristics": ["Superficies azul-marino profundas", "Celeste de señal funcional", "Jerarquía sans serif directa", "Capas tonales y bordes sutiles", "Densidad operativa con aire moderado"],
+    "rules": [
+      { "name": "La regla de la señal", "body": "El celeste se usa para orientar una acción o confirmar una prioridad; no se convierte en fondo dominante.", "section": "colors" },
+      { "name": "La regla del escaneo", "body": "Los títulos y etiquetas clasifican la información; el texto atenuado queda para contexto, no para datos críticos.", "section": "typography" },
+      { "name": "La regla de capas tranquilas", "body": "La elevación separa tareas y no hace que cada componente compita por atención.", "section": "elevation" }
+    ],
+    "dos": ["Do usa el celeste de señal para acciones, foco y prioridades.", "Do conserva tarjetas compactas con aire suficiente para lectura.", "Do organiza datos con jerarquía tipográfica y estados explícitos.", "Do apila controles en móvil antes de reducir su tamaño."],
+    "donts": ["Don't llenar una superficie con celeste.", "Don't añadir decoración o movimiento que ralentice el registro o acceso.", "Don't ocultar acciones críticas solo en hover.", "Don't depender solo del color para comunicar un estado."]
+  }
+}
