@@ -26,7 +26,14 @@ export default function DashboardEventLoading() {
       </div>
 
       <div className="mt-12 h-72 rounded-2xl border border-white/10 bg-white/5" />
-      <div className="mt-12 overflow-hidden rounded-2xl border border-white/10 bg-slate-900/85">
+      <div className="mt-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <div className="h-4 w-28 rounded bg-white/10" />
+          <div className="mt-3 h-8 w-64 rounded-lg bg-white/10" />
+        </div>
+        <div className="h-12 w-40 rounded-xl bg-white/10" />
+      </div>
+      <div className="mt-6 overflow-hidden rounded-2xl border border-white/10 bg-slate-900/85">
         <div className="h-14 border-b border-white/10 bg-white/5" />
         <div className="divide-y divide-white/10">
           {[0, 1, 2].map((item) => (

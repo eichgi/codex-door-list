@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { EmptyState } from "@/components/ui/empty-state";
 import { formatEventDate, formatRegistrationDate } from "@/lib/dates";
 import { getOrganizerEvent } from "@/lib/dashboard/data";
 import { RegistrationChart } from "./registration-chart";
@@ -63,12 +64,15 @@ export default async function DashboardEventPage({
         ) : (
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {event.ticketTypes.map((ticketType) => {
-              const occupancy = Math.min(
-                100,
-                Math.round(
-                  (ticketType.registeredCount / ticketType.maxCapacity) * 100,
-                ),
-              );
+              const capacity = ticketType.maxCapacity;
+              const occupancy = capacity !== null
+                ? Math.min(
+                    100,
+                    Math.round(
+                      (ticketType.registeredCount / capacity) * 100,
+                    ),
+                  )
+                : null;
 
               return (
                 <article
@@ -79,16 +83,25 @@ export default async function DashboardEventPage({
                   <p className="mt-4 text-3xl font-bold">
                     {ticketType.registeredCount}
                     <span className="text-base font-medium text-slate-500">
-                      {" "}/ {ticketType.maxCapacity}
+                      {" "}/ {capacity ?? "sin límite"}
                     </span>
                   </p>
-                  <p className="mt-1 text-sm text-slate-400">registros sobre aforo</p>
-                  <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-800">
+                  <p className="mt-1 text-sm text-slate-400">vendidas sobre cupo</p>
+                  {occupancy !== null && (
                     <div
-                      className="h-full rounded-full bg-sky-300"
-                      style={{ width: `${occupancy}%` }}
-                    />
-                  </div>
+                      aria-label={`${ticketType.name}: ${ticketType.registeredCount} de ${capacity} vendidas`}
+                      aria-valuemax={capacity ?? undefined}
+                      aria-valuemin={0}
+                      aria-valuenow={ticketType.registeredCount}
+                      className="mt-4 h-2 overflow-hidden rounded-full bg-slate-800"
+                      role="progressbar"
+                    >
+                      <div
+                        className="h-full rounded-full bg-sky-300"
+                        style={{ width: `${occupancy}%` }}
+                      />
+                    </div>
+                  )}
                 </article>
               );
             })}
@@ -114,7 +127,7 @@ export default async function DashboardEventPage({
       </section>
 
       <section className="mt-12" aria-labelledby="attendees-title">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-sky-300">
               Inscripciones
@@ -123,28 +136,40 @@ export default async function DashboardEventPage({
               Asistentes registrados
             </h2>
           </div>
-          {event.attendees.length > 0 && (
-            <p className="text-sm text-slate-400">
-              {event.attendees.length}{" "}
-              {event.attendees.length === 1 ? "inscripción" : "inscripciones"}
-            </p>
-          )}
+          <div className="flex flex-wrap items-center gap-3">
+            {event.attendees.length > 0 && (
+              <p className="text-sm text-slate-400">
+                {event.attendees.length}{" "}
+                {event.attendees.length === 1 ? "asistente" : "asistentes"}
+              </p>
+            )}
+            <a
+              href={`/dashboard/${event.id}/asistentes`}
+              className="inline-flex rounded-xl bg-sky-300 px-5 py-3 font-bold text-slate-950 transition hover:bg-sky-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+            >
+              Descargar CSV
+            </a>
+          </div>
         </div>
 
         {event.attendees.length === 0 ? (
-          <p className="mt-6 rounded-2xl border border-dashed border-white/15 bg-white/5 p-8 text-center text-slate-400">
-            Aún no hay asistentes registrados para este evento.
-          </p>
+          <div className="mt-6">
+            <EmptyState
+              headingLevel="h3"
+              title="Aún no hay asistentes registrados"
+              description="Puedes descargar el archivo con sus encabezados y volver a intentarlo cuando haya nuevas ventas."
+            />
+          </div>
         ) : (
           <div className="mt-6 overflow-hidden rounded-2xl border border-white/10 bg-slate-900/85">
             <div className="overflow-x-auto">
               <table className="w-full min-w-[760px] border-collapse text-left">
                 <thead className="border-b border-white/10 bg-white/5 text-xs uppercase tracking-[0.14em] text-slate-400">
                   <tr>
-                    <th className="px-5 py-4 font-bold">Asistente</th>
-                    <th className="px-5 py-4 font-bold">Tipo de entrada</th>
-                    <th className="px-5 py-4 text-center font-bold">Cantidad</th>
-                    <th className="px-5 py-4 font-bold">Registro</th>
+                    <th scope="col" className="px-5 py-4 font-bold">Asistente</th>
+                    <th scope="col" className="px-5 py-4 font-bold">Tipo de entrada</th>
+                    <th scope="col" className="px-5 py-4 text-center font-bold">Cantidad</th>
+                    <th scope="col" className="px-5 py-4 font-bold">Registro</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10">

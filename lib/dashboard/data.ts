@@ -1,6 +1,7 @@
 import "server-only";
 
 import { notFound, redirect } from "next/navigation";
+import { loadOrganizerAttendance } from "@/lib/export/attendees";
 import { logProviderError } from "@/lib/provider-errors";
 import { createClient } from "@/lib/supabase/server";
 import type {
@@ -56,7 +57,7 @@ async function organizerClient(nextPath: string) {
   return { supabase, user };
 }
 
-function failToLoad(error: { message: string }) {
+function failToLoad(error: { message: string }): never {
   logProviderError("No fue posible cargar el panel del organizador", error);
   throw new Error("No fue posible cargar la información del panel.");
 }
@@ -122,54 +123,31 @@ export async function getOrganizerEvent(
   if (eventResult.error) failToLoad(eventResult.error);
   if (!eventResult.data) notFound();
 
-  const [ticketTypesResult, registrationsResult] = await Promise.all([
-    supabase
-      .from("ticket_types")
-      .select("id, event_id, name, max_capacity")
-      .eq("event_id", eventId)
-      .order("name", { ascending: true }),
-    supabase
-      .from("registrations")
-      .select(
-        "id, event_id, ticket_type_id, buyer_name, buyer_email, quantity, created_at",
-      )
-      .eq("event_id", eventId)
-      .order("created_at", { ascending: false }),
-  ]);
-
-  const providerError = ticketTypesResult.error ?? registrationsResult.error;
-  if (providerError) failToLoad(providerError);
-
   const event = eventResult.data as EventRow;
-  const ticketTypeRows = (ticketTypesResult.data ?? []) as TicketTypeRow[];
-  const registrationRows = (registrationsResult.data ?? []) as RegistrationRow[];
-  const ticketTypeNames = new Map(
-    ticketTypeRows.map((ticketType) => [ticketType.id, ticketType.name]),
+  const attendanceResult = await loadOrganizerAttendance(
+    supabase,
+    user.id,
+    eventId,
   );
+  if (attendanceResult.status === "error") failToLoad(attendanceResult.error);
+  if (attendanceResult.status === "forbidden") notFound();
 
-  const ticketTypes: DashboardTicketType[] = ticketTypeRows.map(
+  const ticketTypes: DashboardTicketType[] = attendanceResult.data.ticketTypes.map(
     (ticketType) => ({
       id: ticketType.id,
       name: ticketType.name,
-      maxCapacity: ticketType.max_capacity,
-      registeredCount: registrationRows
-        .filter(
-          (registration) => registration.ticket_type_id === ticketType.id,
-        )
-        .reduce((total, registration) => total + registration.quantity, 0),
+      maxCapacity: ticketType.maxCapacity,
+      registeredCount: ticketType.soldCount,
     }),
   );
-
-  const attendees: DashboardAttendee[] = registrationRows.map(
-    (registration) => ({
-      registrationId: registration.id,
-      name: registration.buyer_name,
-      email: registration.buyer_email,
-      quantity: registration.quantity,
-      ticketTypeName:
-        ticketTypeNames.get(registration.ticket_type_id) ??
-        "Tipo de entrada no disponible",
-      registeredAt: registration.created_at,
+  const attendees: DashboardAttendee[] = attendanceResult.data.attendees.map(
+    (attendee) => ({
+      registrationId: attendee.registrationId,
+      name: attendee.name,
+      email: attendee.email,
+      quantity: 1,
+      ticketTypeName: attendee.ticketTypeName,
+      registeredAt: attendee.purchasedAt,
     }),
   );
 
