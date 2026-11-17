@@ -14,6 +14,11 @@ type CatalogEventRow = {
   starts_at: string;
   venue: string;
   status: "published";
+  ticket_types: Array<{
+    id: string;
+    name: string;
+    remaining: number;
+  }>;
 };
 
 type OrganizerEventRow = {
@@ -80,6 +85,11 @@ export function mapCatalogEvents(data: unknown): CatalogEvent[] {
     startsAt: event.starts_at,
     venue: event.venue,
     status: event.status,
+    ticketTypes: event.ticket_types.map((ticketType) => ({
+      id: ticketType.id,
+      name: ticketType.name,
+      remaining: ticketType.remaining,
+    })),
   }));
 }
 

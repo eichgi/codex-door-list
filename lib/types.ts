@@ -32,6 +32,7 @@ export type CatalogEvent = Pick<
   "id" | "title" | "description" | "startsAt" | "venue"
 > & {
   status: "published";
+  ticketTypes: PublicTicketType[];
 };
 
 export type PublicTicketType = {
