@@ -5,6 +5,7 @@ colors:
   night: "#020617"
   panel: "#0f172a"
   panel-legacy: "#0e1d35"
+  scan-surface: "#ffffff"
   slate-800: "#1e293b"
   signal-sky: "#7dd3fc"
   signal-sky-light: "#bae6fd"
@@ -112,6 +113,7 @@ La paleta usa una base nocturna de slate con un único acento frío, pensado com
 - **Noche operativa** (`#020617`): fondo principal de las superficies de aplicación.
 - **Panel profundo** (`#0f172a`): tarjetas, contenedores y capas elevadas actuales.
 - **Panel profundo heredado** (`#0e1d35`): superficies del flujo de acceso y estilos globales existentes.
+- **Superficie de escaneo** (`#ffffff`): fondo de alto contraste, exclusivo para códigos QR y códigos que deban leerse mediante cámara.
 - **Pizarra secundaria** (`#1e293b`): controles secundarios y pistas de progreso.
 - **Texto principal** (`#f8fafc`): contenido de máxima prioridad sobre fondos oscuros.
 - **Texto secundario** (`#cbd5e1`), **texto atenuado** (`#94a3b8`) y **texto quieto** (`#64748b`): niveles descendentes de apoyo, metadatos y contexto.

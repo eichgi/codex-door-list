@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import QRCode from "qrcode";
+import { CopyTicketCode } from "./copy-ticket-code";
 import { formatEventDate } from "@/lib/dates";
 import { mapTicket } from "@/lib/supabase/mappers";
 import { createClient } from "@/lib/supabase/server";
@@ -16,9 +17,24 @@ export const metadata: Metadata = {
 const codePattern = /^[0-9a-f]{64}$/;
 
 const statusCopy = {
-  valid: { label: "Válida", classes: "border-emerald-300/30 bg-emerald-400/10 text-emerald-200" },
-  used: { label: "Utilizada", classes: "border-amber-300/30 bg-amber-400/10 text-amber-100" },
-  revoked: { label: "Revocada", classes: "border-red-300/30 bg-red-400/10 text-red-100" },
+  valid: {
+    label: "Válida",
+    classes: "border-emerald-400/30 bg-emerald-950/60 text-emerald-100",
+    description: "Muestra este código al personal de acceso.",
+    showsQr: true,
+  },
+  used: {
+    label: "Utilizada",
+    classes: "border-white/10 bg-slate-800 text-slate-100",
+    description: "Esta entrada ya fue registrada. Consulta al personal del evento si necesitas ayuda.",
+    showsQr: false,
+  },
+  revoked: {
+    label: "Revocada",
+    classes: "border-red-400/30 bg-red-950/60 text-red-100",
+    description: "Esta entrada no puede usarse. Consulta al personal del evento si necesitas ayuda.",
+    showsQr: false,
+  },
 } as const;
 
 export default async function PublicTicketPage({
@@ -68,9 +84,25 @@ export default async function PublicTicketPage({
         </section>
 
         <section className="grid content-center justify-items-center bg-white p-7 text-slate-950 sm:p-8">
-          <div className="w-full max-w-[280px]" aria-label="Código QR de la entrada" dangerouslySetInnerHTML={{ __html: qrSvg }} />
-          <p className="mt-4 text-center text-xs font-bold uppercase tracking-wider text-slate-500">Código de entrada</p>
-          <code className="mt-2 max-w-full break-all text-center text-xs">{ticket.code}</code>
+          {status.showsQr ? (
+            <>
+              <div
+                className="w-full max-w-[280px] [&_svg]:h-auto [&_svg]:w-full"
+                aria-label="Código QR de la entrada"
+                dangerouslySetInnerHTML={{ __html: qrSvg }}
+              />
+              <p className="mt-4 text-center text-sm font-bold">{status.description}</p>
+              <p className="mt-2 text-center text-sm text-slate-500">Si no se puede escanear, usa el código de respaldo.</p>
+              <p className="mt-6 text-center text-xs font-bold uppercase tracking-wider text-slate-500">Código de respaldo</p>
+              <code className="mt-2 max-w-full break-all text-center text-xs text-slate-500">{ticket.code}</code>
+              <CopyTicketCode code={ticket.code} />
+            </>
+          ) : (
+            <div className={`w-full rounded-2xl border p-6 text-center ${status.classes}`}>
+              <p className="text-xs font-bold uppercase tracking-[0.2em]">Entrada {status.label}</p>
+              <p className="mt-4 text-base leading-7">{status.description}</p>
+            </div>
+          )}
         </section>
       </article>
     </main>
