@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { EmptyState } from "@/components/ui/empty-state";
 import { formatEventDate, formatRegistrationDate } from "@/lib/dates";
 import { getOrganizerEvent } from "@/lib/dashboard/data";
 import { RegistrationChart } from "./registration-chart";
@@ -13,6 +12,7 @@ export default async function DashboardEventPage({
     (total, ticketType) => total + ticketType.registeredCount,
     0,
   );
+  const hasAttendees = event.attendees.length > 0;
 
   return (
     <section className="py-9">
@@ -137,43 +137,37 @@ export default async function DashboardEventPage({
             </h2>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            {event.attendees.length > 0 && (
+            {hasAttendees && (
               <p className="text-sm text-slate-400">
                 {event.attendees.length}{" "}
                 {event.attendees.length === 1 ? "asistente" : "asistentes"}
               </p>
             )}
-            <a
-              href={`/dashboard/${event.id}/asistentes`}
-              className="inline-flex rounded-xl bg-sky-300 px-5 py-3 font-bold text-slate-950 transition hover:bg-sky-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
-            >
-              Descargar CSV
-            </a>
+            {hasAttendees && (
+              <a
+                href={`/dashboard/${event.id}/asistentes`}
+                className="inline-flex rounded-xl bg-sky-300 px-5 py-3 font-bold text-slate-950 transition hover:bg-sky-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+              >
+                Descargar CSV
+              </a>
+            )}
           </div>
         </div>
 
-        {event.attendees.length === 0 ? (
-          <div className="mt-6">
-            <EmptyState
-              headingLevel="h3"
-              title="Aún no hay asistentes registrados"
-              description="Puedes descargar el archivo con sus encabezados y volver a intentarlo cuando haya nuevas ventas."
-            />
-          </div>
-        ) : (
-          <div className="mt-6 overflow-hidden rounded-2xl border border-white/10 bg-slate-900/85">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[760px] border-collapse text-left">
-                <thead className="border-b border-white/10 bg-white/5 text-xs uppercase tracking-[0.14em] text-slate-400">
-                  <tr>
-                    <th scope="col" className="px-5 py-4 font-bold">Asistente</th>
-                    <th scope="col" className="px-5 py-4 font-bold">Tipo de entrada</th>
-                    <th scope="col" className="px-5 py-4 text-center font-bold">Cantidad</th>
-                    <th scope="col" className="px-5 py-4 font-bold">Registro</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/10">
-                  {event.attendees.map((attendee) => (
+        <div className="mt-6 overflow-hidden rounded-2xl border border-white/10 bg-slate-900/85">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[760px] border-collapse text-left">
+              <thead className="border-b border-white/10 bg-white/5 text-xs uppercase tracking-[0.14em] text-slate-400">
+                <tr>
+                  <th scope="col" className="px-5 py-4 font-bold">Asistente</th>
+                  <th scope="col" className="px-5 py-4 font-bold">Tipo de entrada</th>
+                  <th scope="col" className="px-5 py-4 text-center font-bold">Cantidad</th>
+                  <th scope="col" className="px-5 py-4 font-bold">Registro</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/10">
+                {hasAttendees ? (
+                  event.attendees.map((attendee) => (
                     <tr key={attendee.registrationId}>
                       <td className="px-5 py-4">
                         <p className="font-bold text-slate-100">{attendee.name}</p>
@@ -191,12 +185,23 @@ export default async function DashboardEventPage({
                         {formatRegistrationDate(attendee.registeredAt)}
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={4} className="px-5 py-10 text-center">
+                      <p className="font-bold text-slate-100">
+                        Aún no hay asistentes registrados
+                      </p>
+                      <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-400">
+                        Aquí aparecerán el nombre, tipo de entrada, cantidad y fecha de registro de cada asistente.
+                      </p>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
-        )}
+        </div>
       </section>
     </section>
   );
