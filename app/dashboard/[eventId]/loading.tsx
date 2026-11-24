@@ -37,10 +37,12 @@ export default function DashboardEventLoading() {
         <div className="h-14 border-b border-white/10 bg-white/5" />
         <div className="divide-y divide-white/10">
           {[0, 1, 2].map((item) => (
-            <div key={item} className="grid grid-cols-3 gap-5 px-5 py-5">
+            <div key={item} className="grid grid-cols-5 gap-5 px-5 py-5">
               <div className="h-5 rounded bg-white/10" />
               <div className="h-5 rounded bg-white/5" />
               <div className="h-5 rounded bg-white/5" />
+              <div className="h-5 rounded bg-white/5" />
+              <div className="h-10 rounded-xl bg-white/10" />
             </div>
           ))}
         </div>

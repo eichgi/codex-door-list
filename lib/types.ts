@@ -111,7 +111,13 @@ export type DashboardAttendee = {
   email: string | null;
   quantity: number;
   ticketTypeName: string;
+  ticketCode: string;
   registeredAt: string;
+};
+
+export type ResendTicketState = {
+  status: "idle" | "success" | "error";
+  message: string;
 };
 
 export type DashboardEventDetail = Pick<

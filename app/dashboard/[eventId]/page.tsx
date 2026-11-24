@@ -2,6 +2,7 @@ import Link from "next/link";
 import { formatEventDate, formatRegistrationDate } from "@/lib/dates";
 import { getOrganizerEvent } from "@/lib/dashboard/data";
 import { RegistrationChart } from "./registration-chart";
+import { ResendTicketButton } from "./resend-ticket-button";
 
 export default async function DashboardEventPage({
   params,
@@ -156,13 +157,14 @@ export default async function DashboardEventPage({
 
         <div className="mt-6 overflow-hidden rounded-2xl border border-white/10 bg-slate-900/85">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px] border-collapse text-left">
+            <table className="w-full min-w-[980px] border-collapse text-left">
               <thead className="border-b border-white/10 bg-white/5 text-xs uppercase tracking-[0.14em] text-slate-400">
                 <tr>
                   <th scope="col" className="px-5 py-4 font-bold">Asistente</th>
                   <th scope="col" className="px-5 py-4 font-bold">Tipo de entrada</th>
                   <th scope="col" className="px-5 py-4 text-center font-bold">Cantidad</th>
                   <th scope="col" className="px-5 py-4 font-bold">Registro</th>
+                  <th scope="col" className="px-5 py-4 font-bold">Acciones</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/10">
@@ -184,11 +186,18 @@ export default async function DashboardEventPage({
                       <td className="px-5 py-4 text-sm text-slate-400">
                         {formatRegistrationDate(attendee.registeredAt)}
                       </td>
+                      <td className="px-5 py-4 align-top">
+                        <ResendTicketButton
+                          eventId={event.id}
+                          ticketCode={attendee.ticketCode}
+                          attendeeEmail={attendee.email}
+                        />
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={4} className="px-5 py-10 text-center">
+                    <td colSpan={5} className="px-5 py-10 text-center">
                       <p className="font-bold text-slate-100">
                         Aún no hay asistentes registrados
                       </p>
