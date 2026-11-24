@@ -1,4 +1,4 @@
-import { DashboardHeader } from "@/components/dashboard-header";
+import { OrganizerShell } from "@/components/organizer-shell";
 
 export default function DashboardLayout({
   children,
@@ -9,10 +9,7 @@ export default function DashboardLayout({
         aria-hidden="true"
         className="fixed inset-0 bg-[radial-gradient(circle_at_top_left,rgba(14,165,233,0.13),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(99,102,241,0.1),transparent_35%)]"
       />
-      <div className="relative mx-auto w-full max-w-6xl">
-        <DashboardHeader />
-        {children}
-      </div>
+      <OrganizerShell>{children}</OrganizerShell>
     </main>
   );
 }
