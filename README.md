@@ -18,6 +18,17 @@ Cada registro confirmado emite una única entrada con estado `valid`, `used` o `
 
 Al confirmar un registro, la entrada también se envía al correo del asistente mediante Resend. El mensaje incluye los datos del evento, el código y el QR embebido. Configura `RESEND_API_KEY` y `RESEND_FROM_EMAIL`; el remitente debe pertenecer a un dominio verificado en Resend.
 
+## Tests end-to-end
+
+La prueba de Playwright recorre el flujo real de publicación, registro, entrega de la entrada y control de acceso. Usa una cuenta de organizador ya confirmada y un buzón de pruebas que pueda recibir correo. Configura `E2E_ORGANIZER_EMAIL`, `E2E_ORGANIZER_PASSWORD` y `E2E_ATTENDEE_EMAIL`, además de las variables de Supabase y Resend, y ejecuta:
+
+```bash
+npx playwright install chromium
+npm run test:e2e
+```
+
+Por defecto Playwright levanta la aplicación local en `http://127.0.0.1:3000`. Para probar un despliegue existente, define `E2E_BASE_URL`; en ese caso no se inicia un servidor local. La prueba elimina el evento que crea al finalizar.
+
 ## Getting Started
 
 First, run the development server:
