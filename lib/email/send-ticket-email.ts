@@ -3,6 +3,10 @@ import { Resend } from "resend";
 import { formatEventDate } from "@/lib/dates";
 import type { Ticket } from "@/lib/types";
 
+type SendTicketEmailOptions = {
+  idempotencyKey?: string;
+};
+
 function escapeHtml(value: string) {
   return value.replace(
     /[&<>'"]/g,
@@ -24,6 +28,11 @@ function emailHtml(ticket: Ticket, eventDate: string) {
   const eventVenue = escapeHtml(ticket.eventVenue);
   const escapedEventDate = escapeHtml(eventDate);
   const ticketCode = escapeHtml(ticket.code);
+  const status = ticket.status === "valid"
+    ? { label: "Válida", color: "#6ee7b7" }
+    : ticket.status === "used"
+      ? { label: "Utilizada", color: "#fbbf24" }
+      : { label: "Revocada", color: "#fca5a5" };
 
   return `<!doctype html>
 <html lang="es">
@@ -41,7 +50,7 @@ function emailHtml(ticket: Ticket, eventDate: string) {
               <tr><td style="padding:8px 0;color:#94a3b8">Tipo de entrada</td><td align="right" style="padding:8px 0;font-weight:bold">${ticketType}</td></tr>
               <tr><td style="padding:8px 0;color:#94a3b8">Fecha</td><td align="right" style="padding:8px 0;font-weight:bold;text-transform:capitalize">${escapedEventDate}</td></tr>
               <tr><td style="padding:8px 0;color:#94a3b8">Lugar</td><td align="right" style="padding:8px 0;font-weight:bold">${eventVenue}</td></tr>
-              <tr><td style="padding:8px 0;color:#94a3b8">Estado</td><td align="right" style="padding:8px 0;color:#6ee7b7;font-weight:bold">Válida</td></tr>
+              <tr><td style="padding:8px 0;color:#94a3b8">Estado</td><td align="right" style="padding:8px 0;color:${status.color};font-weight:bold">${status.label}</td></tr>
             </table>
           </td></tr>
           <tr><td align="center" style="background:#ffffff;padding:32px">
@@ -60,6 +69,12 @@ function emailHtml(ticket: Ticket, eventDate: string) {
 }
 
 function emailText(ticket: Ticket, eventDate: string) {
+  const status = ticket.status === "valid"
+    ? "Válida"
+    : ticket.status === "used"
+      ? "Utilizada"
+      : "Revocada";
+
   return [
     `Tu entrada para ${ticket.eventTitle} está confirmada.`,
     "",
@@ -67,7 +82,7 @@ function emailText(ticket: Ticket, eventDate: string) {
     `Tipo de entrada: ${ticket.ticketType}`,
     `Fecha: ${eventDate}`,
     `Lugar: ${ticket.eventVenue}`,
-    "Estado: Válida",
+    `Estado: ${status}`,
     "",
     `Código de entrada: ${ticket.code}`,
     "",
@@ -75,7 +90,10 @@ function emailText(ticket: Ticket, eventDate: string) {
   ].join("\n");
 }
 
-export async function sendTicketEmail(ticket: Ticket) {
+export async function sendTicketEmail(
+  ticket: Ticket,
+  options: SendTicketEmailOptions = {},
+) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM_EMAIL;
 
@@ -108,7 +126,10 @@ export async function sendTicketEmail(ticket: Ticket) {
         },
       ],
     },
-    { idempotencyKey: `ticket-confirmation-${ticket.code}` },
+    {
+      idempotencyKey:
+        options.idempotencyKey ?? `ticket-confirmation-${ticket.code}`,
+    },
   );
 
   if (error) {

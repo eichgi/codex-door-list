@@ -147,6 +147,7 @@ export async function getOrganizerEvent(
       email: attendee.email,
       quantity: 1,
       ticketTypeName: attendee.ticketTypeName,
+      ticketCode: attendee.ticketCode,
       registeredAt: attendee.purchasedAt,
     }),
   );
