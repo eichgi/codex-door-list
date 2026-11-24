@@ -17,6 +17,12 @@ export function DashboardHeader() {
       </div>
       <div className="flex flex-wrap items-center gap-3">
         <Link
+          href="/scan"
+          className="rounded-xl border border-sky-300/40 px-4 py-2.5 text-sm font-bold text-sky-200 transition hover:border-sky-300 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+        >
+          Control de acceso
+        </Link>
+        <Link
           href="/organizador"
           className="rounded-xl border border-white/15 px-4 py-2.5 text-sm font-bold text-slate-200 transition hover:border-sky-300/60 hover:text-white"
         >
